@@ -99,7 +99,12 @@ while True:
     print("3. User Management")
     print("4. Exit")
 
-    choice = input("Enter your choice: ")
+    try:
+        choice = input("Enter your choice: ")
+    except ValueError:
+        print("Invalid input. Please enter a number.")
+        continue
+
     if choice == '1':
         while True:
             print("\nLibrary Management")
@@ -122,13 +127,29 @@ while True:
                 library.view_books()
             
             elif sub_choice == '3':
-                book_id = int(input("Enter book ID to borrow: "))
-                user_id = int(input("Enter user ID: "))
+                try:
+                    book_id = int(input("Enter book ID to borrow: "))
+                except ValueError:
+                    print("Invalid input. Book ID must be a number.")
+                    continue
+                try:
+                    user_id = int(input("Enter user ID: "))
+                except ValueError:
+                    print("Invalid input. User ID must be a number.")
+                    continue
                 library.borrow_book(book_id, user_id)
             
             elif sub_choice == '4':
-                book_id = int(input("Enter book ID to return: "))
-                user_id = int(input("Enter user ID: "))
+                try:
+                    book_id = int(input("Enter book ID to return: "))
+                except ValueError:
+                    print("Invalid input. Book ID must be a number.")
+                    continue
+                try:
+                    user_id = int(input("Enter user ID: "))
+                except ValueError:
+                    print("Invalid input. User ID must be a number.")
+                    continue
                 library.return_book(book_id, user_id)
         
             elif sub_choice == '5':
@@ -176,7 +197,11 @@ while True:
 
             if sub_choice == '1':
                 name = input("Enter user name: ")
-                age = int(input("Enter user age: "))
+                try:
+                    age = int(input("Enter user age: "))
+                except ValueError:
+                    print("Invalid input. Age must be a number.")
+                    continue
                 user = User(name, age)
                 library.users.append(user)
                 print(f"User '{name}' added to the library.")
