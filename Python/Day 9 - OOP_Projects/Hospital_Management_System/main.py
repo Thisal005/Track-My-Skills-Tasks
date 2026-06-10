@@ -34,7 +34,8 @@ class Patient:
     
     def get_patient_info_by_id(self, p_id):
         if self.p_id == p_id:
-            return f"Patient ID : {self.p_id} , Patient Name : {self.p_name}, Age : {self.age}, Phone Number : {self.p_phone_number}, Gender : {self.gender}, Medical History : {self.medical_history}"
+            return f"Patient Inf : {self.p_id}"
+            #return f"Patient ID : {self.p_id} , Patient Name : {self.p_name}, Age : {self.age}, Phone Number : {self.p_phone_number}, Gender : {self.gender}, Medical History : {self.medical_history}"
         else:
             return "Patient not found"
         
