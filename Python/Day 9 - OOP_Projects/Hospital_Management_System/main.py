@@ -15,10 +15,17 @@ class Patient:
     def create_new_patient(self):
         print("Register New Patient")
         self.p_name = input("Enter Full Name : ")
-        self.age = input("Enter Patient Age :  ")
+        try:
+            self.age = int(input("Enter Patient Age :  "))
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
         self.p_id = self.p_id + 1
-        self.p_phone_number = input("Enter Patient Phone Number : ")
-        self.gender = input("Enter Patient Gender : ")
+        try:
+            self.p_phone_number = int(input("Enter Patient Phone Number : "))
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+        self.gender = input("Enter Patient Gender : (M/F) ")
         self.medical_history = input("Enter Patient Medical History : ")
         print("Patient Registered Successfully with ID : ", self.p_id)
 
@@ -55,7 +62,10 @@ class Doctor:
         self.d_name = input("Enter Full Name : ")
         self.specialization = input("Enter Doctor Specialization : ")
         self.d_id += 1
-        self.d_phone_number = input("Enter Doctor Phone Number : ")
+        try:
+            self.d_phone_number = int(input("Enter Doctor Phone Number : "))
+        except ValueError:
+            print("Invalid input. Please enter a number.")
         self.d_email = input("Enter Doctor Email : ")
         print("Doctor Registered Successfully with ID : ", self.d_id)
         return self.d_id
@@ -216,7 +226,12 @@ while True:
     print("10. Get Appointment by ID ")
     print("11. Exit")
 
-    choice = int(input("Enter Your Choice : "))
+    try:
+        choice = int(input("Enter Your Choice : "))
+    except ValueError:
+        print("Invalid input. Please enter a number.")
+        continue
+
     if choice == 1:
         patient_id = hospital.create_new_patient()
         hospital.add_patient(patient_id)
@@ -225,11 +240,31 @@ while True:
         hospital.add_doctor(doctor_id)
        
     elif choice == 3:
-        patient_id = int(input("Enter Patient ID : "))
-        doctor_id = int(input("Enter Doctor ID : "))
-        appointment_date = input("Enter Appointment Date : ")
-        appointment_time = input("Enter Appointment Time : ")
-        status = input("Enter Appointment Status : ")
+        try:    
+            patient_id = int(input("Enter Patient ID : "))
+        except ValueError:
+            print("Invalid input. Patient ID must be a number.")
+            continue
+        try:
+            doctor_id = int(input("Enter Doctor ID : "))
+        except ValueError:
+            print("Invalid input. Doctor ID must be a number.")
+            continue
+        try:
+            appointment_date = input("Enter Appointment Date : ")
+        except ValueError:
+            print("Invalid input. Please enter a valid date.")
+            continue
+        try:
+            appointment_time = input("Enter Appointment Time : ")
+        except ValueError:
+            print("Invalid input. Please enter a valid time.")
+            continue
+        try:
+            status = input("Enter Appointment Status : ")
+        except ValueError:
+            print("Invalid input. Please enter a valid status.")
+            continue
         appointment_id = hospital.create_new_appointment(patient_id, doctor_id, appointment_date, appointment_time, status)
         hospital.add_appointment(appointment_id)
        
@@ -240,17 +275,33 @@ while True:
     elif choice == 6:
         hospital.view_appointments()
     elif choice == 7:
-        appointment_id = int(input("Enter Appointment ID : "))
+        try:
+            appointment_id = int(input("Enter Appointment ID : "))
+        except ValueError:
+            print("Invalid input. Appointment ID must be a number.")
+            continue
         status = input("Enter New Status : ")
         hospital.update_appointment_status(appointment_id, status)
     elif choice == 8:
-        patient_id = int(input("Enter Patient ID : "))
+        try:
+            patient_id = int(input("Enter Patient ID : "))
+        except ValueError:
+            print("Invalid input. Patient ID must be a number.")
+            continue
         hospital.get_appointments_by_patient_id(patient_id)
     elif choice == 9:
-        doctor_id = int(input("Enter Doctor ID : "))
+        try:
+            doctor_id = int(input("Enter Doctor ID : "))
+        except ValueError:
+            print("Invalid input. Doctor ID must be a number.")
+            continue
         hospital.get_appointments_by_doctor_id(doctor_id)
     elif choice == 10:
-        appointment_id = int(input("Enter Appointment ID : "))
+        try:
+            appointment_id = int(input("Enter Appointment ID : "))
+        except ValueError:
+            print("Invalid input. Appointment ID must be a number.")
+            continue
         hospital.get_appointments_by_id(appointment_id)
     elif choice == 11:
         print("Exiting...")
