@@ -261,7 +261,7 @@ while True:
             print("Invalid input. Please enter a valid time.")
             continue
         try:
-            status = input("Enter Appointment Status : ")
+            status = input("Enter Appointment Status (e.g. Scheduled, Completed, Cancelled) : ")
         except ValueError:
             print("Invalid input. Please enter a valid status.")
             continue
@@ -280,7 +280,8 @@ while True:
         except ValueError:
             print("Invalid input. Appointment ID must be a number.")
             continue
-        status = input("Enter New Status : ")
+        hospital.get_appointments_by_id(appointment_id)
+        status = input("Enter New Status (e.g. Scheduled, Completed, Cancelled) : ")
         hospital.update_appointment_status(appointment_id, status)
     elif choice == 8:
         try:
