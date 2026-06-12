@@ -91,7 +91,7 @@ class Customer:
     c_id = 100000
 
     def __init__(self):
-        Customer.c_id += 1 # Increment in init
+        Customer.c_id += 1 
         self.customer_id = Customer.c_id
         self.c_name = ""
         self.c_mobile_no = 0
@@ -123,14 +123,14 @@ class Customer:
         return customer_dict
 
 
-class Order: # Fixed class capitalization naming conflict
+class Order: 
     order_id = 500000
     
     def __init__(self):
         Order.order_id += 1
         self.current_order_id = Order.order_id
         self.c_id = 0
-        self.item_codes_with_quantity = [] # Fixed: initialized cleanly without empty inner list
+        self.item_codes_with_quantity = [] 
 
     def create_new_order(self):
         print("\n--- Create New Order ---")
@@ -180,7 +180,10 @@ class Bill:
         Bill.bill_id += 1
         self.current_bill_id = Bill.bill_id
         self.order_id = 0
+        self.customer_id = 0
         self.total_amount = 0.0
+        self.bill_time = ""
+        self.printed_items = []  # Stores item details specifically mapped for the print layout
 
     def create_new_bill(self, registered_orders, active_menu):
         print("\n--- Create New Bill ---")
@@ -190,7 +193,6 @@ class Bill:
             print("Please Enter Valid Order ID.")
             return None
 
-        # Find the matching order from the restaurant database
         target_order = None
         for o in registered_orders:
             if o["Order ID"] == target_order_id:
@@ -202,38 +204,60 @@ class Bill:
             return None
 
         self.order_id = target_order_id
+        self.customer_id = target_order["Customer ID"]
         self.total_amount = 0.0
+        self.bill_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S") # Capture current Date & Time
+        self.printed_items = []
         
-        # Combine all food categories to check prices
         all_items = active_menu.drinks + active_menu.main_course + active_menu.dessert
         
-        # Calculate pricing logic: (Price * Quantity)
         for ordered_item in target_order["Items"]:
             code = ordered_item[0]
             qty = ordered_item[1]
             
-            # Find the price of this specific item code
             for menu_item in all_items:
                 if menu_item["Item_Code"] == code:
-                    self.total_amount += menu_item["Price"] * qty
+                    cost = menu_item["Price"] * qty
+                    self.total_amount += cost
+                    # Save a clear reference format to simplify the receipt print processing loop
+                    self.printed_items.append({
+                        "Name": menu_item["Name"],
+                        "Qty": qty,
+                        "Price": menu_item["Price"],
+                        "Total": cost
+                    })
 
         bill_dict = {
             "Bill ID" : self.current_bill_id,
             "Order ID" : self.order_id,
+            "Customer ID": self.customer_id,
+            "Items": self.printed_items,
             "Total Amount" : self.total_amount,
+            "Date Time": self.bill_time
         }
-        print(f"Bill created successfully with Bill ID: {self.current_bill_id} and Total Amount: ${self.total_amount:.2f}")
         return bill_dict
     
     def print_bill(self):
-        print("\n--- Bill Details ---")
-        print(f"Bill ID: {self.current_bill_id}")
-        print(f"Order ID: {self.order_id}")
-        print(f"Customer ID: {self.c_id}")
-        print("Items:")
-        for ordered_item in self.item_codes_with_quantity:
-            print(f"  Item Code: {ordered_item[0]}, Quantity: {ordered_item[1]}")
-        print(f"Total Amount: ${self.total_amount:.2f}")
+        # Professional dynamic terminal generation receipt layout
+        print("\n==============================================")
+        print("              RESTAURANT RECEIPT              ")
+        print("==============================================")
+        print(f"Bill ID    : {self.current_bill_id}")
+        print(f"Order ID   : {self.order_id}")
+        print(f"Customer ID: {self.customer_id}")
+        print(f"Date & Time: {self.bill_time}")
+        print("----------------------------------------------")
+        print(f"{'Item Name':<18} | {'Qty':<4} | {'Price':<7} | {'Total':<7}")
+        print("----------------------------------------------")
+        
+        for item in self.printed_items:
+            print(f"{item['Name']:<18} | {item['Qty']:<4} | ${item['Price']:<6.2f} | ${item['Total']:<6.2f}")
+            
+        print("----------------------------------------------")
+        print(f"TOTAL AMOUNT COMPLETED:             ${self.total_amount:.2f}")
+        print("==============================================")
+        print("          Thank You! Come Again.             ")
+        print("==============================================\n")
     
 
 class Restaurant:
@@ -254,17 +278,17 @@ class Restaurant:
         self.customers.append(customer_data)
     
     def create_new_order(self):
-        new_order_obj = Order() # Fixed naming collision conflict
+        new_order_obj = Order() 
         order_data = new_order_obj.create_new_order()
         if order_data:
             self.orders.append(order_data)
 
     def create_new_bill(self):
         bill = Bill()
-        # Pass data context down into bill calculation engine
         bill_data = bill.create_new_bill(self.orders, self.menu)
         if bill_data:
             self.bills.append(bill_data)
+            bill.print_bill() # Automatically prints receipt layout instantly upon successful data billing execution
     
     def get_menu(self):
         self.menu.get_all_drinks()
@@ -295,11 +319,15 @@ class Restaurant:
         print(f"No order found with Order ID: {order_id}")
 
     def get_bill_by_id(self, bill_id):
+        # Instantiates dynamic visual retrieval for structured database printing calls later on
         for b in self.bills:
             if b["Bill ID"] == bill_id:
-                print(f"\nBill ID: {b['Bill ID']}")
-                print(f"Order ID: {b['Order ID']}")
-                print(f"Total Amount: ${b['Total Amount']:.2f}")
+                print("\n--- Saved Bill Record ---")
+                print(f"Bill ID    : {b['Bill ID']}")
+                print(f"Order ID   : {b['Order ID']}")
+                print(f"Customer ID: {b['Customer ID']}")
+                print(f"Date Filled: {b['Date Time']}")
+                print(f"Total Paid : ${b['Total Amount']:.2f}")
                 return
         print(f"No bill found with Bill ID: {bill_id}")
 
@@ -316,11 +344,11 @@ while True:
     print("1. Create New Food Item")
     print("2. Create New Customer")
     print("3. Create New Order")
-    print("4. Create New Bill")
+    print("4. Create New Bill (Auto-Prints Receipt)")
     print("5. Get Menu")
     print("6. Get Customer by ID")
     print("7. Get Order by ID")    
-    print("8. Get Bill by ID")
+    print("8. Get Bill Summary by ID")
     print("9. Get Food Item by ID")
     print("10. Exit")
 
@@ -334,7 +362,6 @@ while True:
         restaurant.create_new_order()
     elif choice == "4":
         restaurant.create_new_bill()
-        restaurant.
     elif choice == "5":
         restaurant.get_menu()
     elif choice == "6":
