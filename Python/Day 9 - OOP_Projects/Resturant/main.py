@@ -183,7 +183,7 @@ class Bill:
         self.customer_id = 0
         self.total_amount = 0.0
         self.bill_time = ""
-        self.printed_items = []  # Stores item details specifically mapped for the print layout
+        self.printed_items = []  
 
     def create_new_bill(self, registered_orders, active_menu):
         print("\n--- Create New Bill ---")
