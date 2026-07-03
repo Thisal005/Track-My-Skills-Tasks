@@ -1,0 +1,3 @@
+python is awesome.
+i love python.
+python is easy.
